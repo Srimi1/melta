@@ -35,10 +35,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -76,12 +76,14 @@ fun PokemonPickerScreen(onBack: () -> Unit, onCreate: () -> Unit) {
     val scope = rememberCoroutineScope()
     val config by store.batteryBar.collectAsStateWithLifecycle(initialValue = BatteryBarConfig())
 
-    val all by produceState(emptyList<PokemonEntry>()) {
-        value = withContext(Dispatchers.IO) { Pokedex.all(context) }
+    var all by remember { mutableStateOf(emptyList<PokemonEntry>()) }
+    LaunchedEffect(Unit) {
+        all = withContext(Dispatchers.IO) { Pokedex.all(context) }
     }
     var refresh by remember { mutableIntStateOf(0) }
-    val creations by produceState(emptyList<Creation>(), refresh) {
-        value = CreationStore.list(context).filter { it.kind == CreationKind.SPRITE }
+    var creations by remember { mutableStateOf(emptyList<Creation>()) }
+    LaunchedEffect(refresh) {
+        creations = CreationStore.list(context).filter { it.kind == CreationKind.SPRITE }
     }
     var query by rememberSaveable { mutableStateOf("") }
     var type by rememberSaveable { mutableStateOf<String?>(null) }

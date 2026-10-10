@@ -46,7 +46,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -189,9 +188,10 @@ private fun PreviewCard(config: BatteryBarConfig) {
     var simLevel by remember { mutableFloatStateOf(64f) }
     var simCharging by remember { mutableStateOf(true) }
 
-    val sprite by produceState<LoadedSprite?>(null, config.spriteKey, config.position, config.barThicknessDp) {
+    var sprite by remember { mutableStateOf<LoadedSprite?>(null) }
+    LaunchedEffect(config.spriteKey, config.position, config.barThicknessDp) {
         val target = BatteryBarView.spriteTargetHeightPx(config, statusBarPx, density.density)
-        value = SpriteLoader.load(context, config, target)
+        sprite = SpriteLoader.load(context, config, target)
     }
 
     Card(Modifier.fillMaxWidth()) {
@@ -310,8 +310,9 @@ private fun BarSection(
     onCreatePattern: () -> Unit,
 ) {
     val context = LocalContext.current
-    val tiles by produceState(emptyList<File>()) {
-        value = CreationStore.list(context).filter { it.kind == CreationKind.TILE }.map { it.file }
+    var tiles by remember { mutableStateOf(emptyList<File>()) }
+    LaunchedEffect(Unit) {
+        tiles = CreationStore.list(context).filter { it.kind == CreationKind.TILE }.map { it.file }
     }
 
     SettingsSection(stringResource(R.string.section_bar)) {
