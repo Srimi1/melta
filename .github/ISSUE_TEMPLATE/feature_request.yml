@@ -1,0 +1,24 @@
+name: Feature request
+description: Suggest an idea or a new stage
+labels: [enhancement]
+body:
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Battery Bar
+        - Notification shade (stage 2)
+        - Lock screen (stage 3)
+        - Live wallpapers (stage 4)
+        - Icon studio (stage 5)
+        - Something new
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: Your idea
+      description: What would you like, and why?
+    validations:
+      required: true

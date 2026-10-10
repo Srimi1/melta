@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="melta_background">#FFFFFBFF</color>
+    <color name="icon_bg_top">#FF3A1C6B</color>
+    <color name="icon_bg_bottom">#FF1A1030</color>
+</resources>

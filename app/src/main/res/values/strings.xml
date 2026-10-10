@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Melta</string>
+    <string name="tagline">Make your phone yours</string>
+    <string name="back">Back</string>
+    <string name="change">Change</string>
+    <string name="delete">Delete</string>
+    <string name="preview">Preview</string>
+    <string name="coming_in_stage">Coming in stage %1$d</string>
+
+    <!-- Home modules -->
+    <string name="module_battery">Battery Bar</string>
+    <string name="module_battery_desc">A Pokémon sits on your battery level and reacts when you charge</string>
+    <string name="module_shade">Notification Shade</string>
+    <string name="module_shade_desc">Themes and layouts for the pull down panel</string>
+    <string name="module_lock">Lock Screen</string>
+    <string name="module_lock_desc">Clocks, widgets and companions on the lock screen</string>
+    <string name="module_wallpaper">Live Wallpapers</string>
+    <string name="module_wallpaper_desc">Light, battery aware animated wallpapers</string>
+    <string name="module_icons">Icon Studio</string>
+    <string name="module_icons_desc">Restyle app icons and shortcuts</string>
+
+    <!-- Battery bar -->
+    <string name="battery_bar">Battery Bar</string>
+    <string name="show_bar">Show battery bar</string>
+    <string name="show_bar_desc">Draws over the status bar on every screen</string>
+    <string name="perm_title">One permission needed</string>
+    <string name="perm_body">Melta needs \"Display over other apps\" to draw the battery bar on top of your status bar. It never reads what is on screen and never blocks your taps.</string>
+    <string name="perm_grant">Grant permission</string>
+    <string name="sim_charging">Simulate charging</string>
+    <string name="sim_level">Simulated level</string>
+
+    <string name="section_companion">Companion</string>
+    <string name="section_bar">Bar</string>
+    <string name="section_charging">Charging effect</string>
+    <string name="section_extras">Extras</string>
+    <string name="shiny">Shiny</string>
+    <string name="animated">Animated sprite</string>
+    <string name="animated_desc">Available for Gen 1 to 5, others use the still sprite</string>
+    <string name="size">Size</string>
+    <string name="where_it_sits">Where it sits</string>
+    <string name="flip">Face the other way</string>
+    <string name="bob">Idle bounce</string>
+    <string name="bob_desc">A gentle breathing bounce. Turn off to save a little extra battery</string>
+    <string name="position">Position</string>
+    <string name="thickness">Thickness</string>
+    <string name="opacity">Opacity</string>
+    <string name="fill_style">Fill style</string>
+    <string name="color_main">Main color</string>
+    <string name="color_second">Second color</string>
+    <string name="my_patterns">My patterns</string>
+    <string name="no_patterns">No patterns yet. Draw one below.</string>
+    <string name="create_pattern">Create your own</string>
+    <string name="intensity">Intensity</string>
+    <string name="celebrate">Full charge celebration</string>
+    <string name="celebrate_desc">Your companion spins and bursts with joy at 100%</string>
+    <string name="show_percent">Show percentage</string>
+    <string name="low_threshold">Low battery warning</string>
+    <string name="hide_landscape">Hide in landscape</string>
+    <string name="hide_fullscreen">Hide in fullscreen apps</string>
+    <string name="hide_fullscreen_desc">Videos and games stay clean (Android 11+)</string>
+
+    <!-- Picker -->
+    <string name="pick_companion">Pick a companion</string>
+    <string name="my_creations">My creations</string>
+    <string name="search_hint">Search by name or number</string>
+    <string name="pokemon_count">%1$d Pokémon</string>
+    <string name="your_creation">Your creation</string>
+
+    <!-- Editor -->
+    <string name="undo">Undo</string>
+    <string name="clear">Clear</string>
+    <string name="mirror">Mirror</string>
+    <string name="tool_pen">Pen</string>
+    <string name="tool_eraser">Eraser</string>
+    <string name="tool_fill">Fill</string>
+    <string name="import_image">Import image</string>
+    <string name="start_from_melty">Start from Melty</string>
+    <string name="save_as_companion">Save and use as companion</string>
+    <string name="save_as_pattern">Save and use as bar pattern</string>
+    <string name="editor_hint">Companions sit on the bar. Patterns tile along the bar fill. Both are saved under My creations.</string>
+    <string name="editor_empty">Draw something first</string>
+    <string name="editor_saved">Saved</string>
+
+    <!-- Notification -->
+    <string name="channel_battery_bar">Battery bar</string>
+    <string name="channel_battery_bar_desc">Keeps the battery bar running. Silent and minimized.</string>
+    <string name="notif_running">Battery bar is on</string>
+    <string name="notif_guarding">%1$s is watching your battery</string>
+    <string name="hide_bar">Turn off</string>
+</resources>

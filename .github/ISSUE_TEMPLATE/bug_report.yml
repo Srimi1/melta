@@ -1,0 +1,37 @@
+name: Bug report
+description: Something is not working right
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Battery Bar
+        2. Pick Charizard
+        3. Plug in the charger
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Device and Android version
+      placeholder: Pixel 8, Android 15
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Melta version
+      placeholder: 0.1.0
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or logs

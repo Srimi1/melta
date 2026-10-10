@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 108 108">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3A1C6B"/>
+      <stop offset="1" stop-color="#1A1030"/>
+    </linearGradient>
+    <linearGradient id="fill" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFC93C"/>
+      <stop offset="1" stop-color="#FF7A45"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFC93C" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFC93C" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="108" height="108" rx="24" fill="url(#bg)"/>
+  <circle cx="54" cy="54" r="34" fill="url(#glow)"/>
+  <!-- battery fill and the molten drip -->
+  <path fill="url(#fill)" d="M36,43 H58 V61 H36 A3,3 0 0 1 33,58 V46 A3,3 0 0 1 36,43 Z"/>
+  <path fill="url(#fill)" d="M37.5,63 C39.6,65.6 40.4,67.4 39.4,69.8 A4.2,4.2 0 1 0 45,69.8 C44,67.4 44.8,65.6 46.9,63 Z"/>
+  <!-- battery body -->
+  <path fill="none" stroke="#FFFFFF" stroke-width="4.5" stroke-linejoin="round" d="M35,38 H67 A7,7 0 0 1 74,45 V59 A7,7 0 0 1 67,66 H35 A7,7 0 0 1 28,59 V45 A7,7 0 0 1 35,38 Z"/>
+  <path fill="#FFFFFF" d="M77,46 H79 A2,2 0 0 1 81,48 V56 A2,2 0 0 1 79,58 H77 Z"/>
+  <!-- lightning bolt -->
+  <path fill="#FFFFFF" stroke="#5B2A86" stroke-width="2" stroke-linejoin="round" d="M57,28 L44,53 H52.5 L48.5,76 L63.5,47 H55 L59.5,28 Z"/>
+</svg>

@@ -1,0 +1,47 @@
+name: Release
+
+on:
+  push:
+    tags: [ "v*" ]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      # Optional: add MELTA_KEYSTORE_BASE64, MELTA_KEYSTORE_PASSWORD, MELTA_KEY_ALIAS and
+      # MELTA_KEY_PASSWORD as repository secrets to sign with your own key.
+      - name: Decode keystore
+        env:
+          KEYSTORE_B64: ${{ secrets.MELTA_KEYSTORE_BASE64 }}
+        if: env.KEYSTORE_B64 != ''
+        run: |
+          echo "$KEYSTORE_B64" | base64 -d > "$RUNNER_TEMP/melta.jks"
+          echo "MELTA_KEYSTORE_PATH=$RUNNER_TEMP/melta.jks" >> "$GITHUB_ENV"
+
+      - name: Build release APK
+        env:
+          MELTA_KEYSTORE_PASSWORD: ${{ secrets.MELTA_KEYSTORE_PASSWORD }}
+          MELTA_KEY_ALIAS: ${{ secrets.MELTA_KEY_ALIAS }}
+          MELTA_KEY_PASSWORD: ${{ secrets.MELTA_KEY_PASSWORD }}
+        run: |
+          ./gradlew --stacktrace assembleRelease
+          cp app/build/outputs/apk/release/app-release.apk "melta-${GITHUB_REF_NAME}.apk"
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: melta-*.apk
+          generate_release_notes: true
