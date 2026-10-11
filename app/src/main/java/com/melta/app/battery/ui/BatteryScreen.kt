@@ -75,6 +75,7 @@ import com.melta.app.battery.sprites.LoadedSprite
 import com.melta.app.battery.sprites.Pokedex
 import com.melta.app.battery.sprites.SpriteLoader
 import com.melta.app.battery.sprites.SpriteRepository
+import com.melta.app.core.prefs.BarMode
 import com.melta.app.core.prefs.BarPosition
 import com.melta.app.core.prefs.BatteryBarConfig
 import com.melta.app.core.prefs.ChargeEffect
@@ -100,7 +101,8 @@ fun BatteryScreen(onBack: () -> Unit, onPickCompanion: () -> Unit, onCreatePatte
 
     // Keep the service in step with the saved switch, e.g. after granting the permission.
     LaunchedEffect(config.enabled, canDraw) {
-        if (config.enabled && canDraw) BatteryOverlayService.start(context)
+        // Restarting also lets the service switch to the overlay once the permission is granted.
+        if (config.enabled) BatteryOverlayService.start(context)
     }
 
     val notifPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
@@ -112,11 +114,16 @@ fun BatteryScreen(onBack: () -> Unit, onPickCompanion: () -> Unit, onCreatePatte
         )
     }
 
+    fun openAppInfo() {
+        context.startActivity(
+            Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${context.packageName}"))
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+        )
+    }
+
+    // No overlay permission? The service shows the bar in the notification panel instead,
+    // so turning it on always works.
     fun setEnabled(on: Boolean) {
-        if (on && !canDraw) {
-            openOverlaySettings()
-            return
-        }
         if (on && Build.VERSION.SDK_INT >= 33) notifPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         scope.launch {
             store.updateBatteryBar { it.copy(enabled = on) }
@@ -147,17 +154,8 @@ fun BatteryScreen(onBack: () -> Unit, onPickCompanion: () -> Unit, onCreatePatte
         ) {
             item { PreviewCard(config) }
 
-            if (!canDraw) {
-                item {
-                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
-                        Column(Modifier.padding(16.dp)) {
-                            Text(stringResource(R.string.perm_title), style = MaterialTheme.typography.titleMedium)
-                            Text(stringResource(R.string.perm_body), style = MaterialTheme.typography.bodyMedium)
-                            Spacer(Modifier.height(8.dp))
-                            Button(onClick = ::openOverlaySettings) { Text(stringResource(R.string.perm_grant)) }
-                        }
-                    }
-                }
+            if (!canDraw && config.barMode == BarMode.OVERLAY) {
+                item { PermissionCard(onGrant = ::openOverlaySettings, onOpenAppInfo = ::openAppInfo) }
             }
 
             item {
@@ -165,7 +163,7 @@ fun BatteryScreen(onBack: () -> Unit, onPickCompanion: () -> Unit, onCreatePatte
                     SwitchRow(
                         title = stringResource(R.string.show_bar),
                         subtitle = stringResource(R.string.show_bar_desc),
-                        checked = config.enabled && canDraw,
+                        checked = config.enabled,
                         onChange = ::setEnabled,
                     )
                 }
@@ -175,6 +173,35 @@ fun BatteryScreen(onBack: () -> Unit, onPickCompanion: () -> Unit, onCreatePatte
             item { BarSection(config, update, onCreatePattern) }
             item { EffectSection(config, update) }
             item { ExtrasSection(config, update) }
+        }
+    }
+}
+
+// ------------------------------------------------------------------- permission help
+
+/**
+ * Shown when the user wants the status bar overlay but Android hasn't allowed it yet.
+ * The bar already works in the notification panel meanwhile. For sideloaded apps Android 13+
+ * greys the toggle out as a "restricted setting", so we explain how to unlock it.
+ */
+@Composable
+private fun PermissionCard(onGrant: () -> Unit, onOpenAppInfo: () -> Unit) {
+    var showSteps by remember { mutableStateOf(false) }
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
+        Column(Modifier.padding(16.dp)) {
+            Text(stringResource(R.string.perm_fallback_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.perm_fallback_body), style = MaterialTheme.typography.bodyMedium)
+            Spacer(Modifier.height(8.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = onGrant) { Text(stringResource(R.string.perm_grant)) }
+                OutlinedButton(onClick = { showSteps = !showSteps }) { Text(stringResource(R.string.perm_greyed_out)) }
+            }
+            if (showSteps) {
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.perm_restricted_steps), style = MaterialTheme.typography.bodyMedium)
+                Spacer(Modifier.height(8.dp))
+                FilledTonalButton(onClick = onOpenAppInfo) { Text(stringResource(R.string.open_app_info)) }
+            }
         }
     }
 }
@@ -325,6 +352,12 @@ private fun BarSection(
     }
 
     SettingsSection(stringResource(R.string.section_bar)) {
+        ChoiceChips(
+            stringResource(R.string.show_in),
+            BarMode.entries.toList(),
+            config.barMode,
+            label = { if (it == BarMode.OVERLAY) "Status bar" else "Notification panel" },
+        ) { v -> update { it.copy(barMode = v) } }
         ChoiceChips(
             stringResource(R.string.position),
             BarPosition.entries.toList(),

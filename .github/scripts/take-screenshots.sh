@@ -68,5 +68,20 @@ adb shell dumpsys battery set level 12
 demo battery -e level 12 -e plugged false
 shot 06-bar-low 6
 
+# Without the overlay permission the bar moves to the notification panel.
+adb shell dumpsys battery set ac 1
+adb shell dumpsys battery set status 2
+adb shell dumpsys battery set level 72
+demo battery -e level 72 -e plugged true
+demo notifications -e visible true
+adb shell appops set "$PKG" SYSTEM_ALERT_WINDOW deny
+open_screen --es melta.screen battery --ez melta.demo true
+sleep 6
+adb shell input keyevent KEYCODE_HOME
+sleep 2
+adb shell cmd statusbar expand-notifications
+shot 07-notification-panel 5
+adb shell cmd statusbar collapse
+
 adb shell dumpsys battery reset
 ls -la "$OUT"

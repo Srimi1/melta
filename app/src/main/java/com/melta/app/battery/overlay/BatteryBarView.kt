@@ -160,6 +160,29 @@ class BatteryBarView @JvmOverloads constructor(
         if (!value) ensureRunning()
     }
 
+    /**
+     * Draws one still frame into a bitmap, for the notification panel bar. Reuses all the normal
+     * drawing (fill, matched colors, sprite, low battery tilt). While charging it also freezes a
+     * small burst of the charging effect. The view is never attached, so no animation runs.
+     */
+    fun renderSnapshot(width: Int, height: Int): Bitmap {
+        statusBarHeightPx = height
+        measure(
+            MeasureSpec.makeMeasureSpec(width, MeasureSpec.EXACTLY),
+            MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY),
+        )
+        layout(0, 0, width, height)
+        particles.clear()
+        if (charging && effect != ChargeEffect.NONE) {
+            repeat(SNAPSHOT_PARTICLES) { emitOne() }
+            particles.update(0.18f, width.toFloat(), height.toFloat())
+        }
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+        draw(Canvas(bitmap))
+        particles.clear()
+        return bitmap
+    }
+
     /** Height the overlay window needs for the current config and sprite. */
     fun requiredHeightPx(): Int {
         val thick = dp(config.barThicknessDp.toFloat()).toInt()
@@ -406,6 +429,7 @@ class BatteryBarView @JvmOverloads constructor(
 
     companion object {
         private const val CELEBRATE_SECONDS = 2.4f
+        private const val SNAPSHOT_PARTICLES = 14
         private const val LOW_COLOR = 0xFFFF5252.toInt()
 
         /** Sprite height that fits the chosen layout. Used to decode the sprite at the right size. */

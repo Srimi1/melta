@@ -36,11 +36,15 @@ Real captures from an Android 14 emulator, made by the [Screenshots workflow](.g
 
 | Home | Battery Bar settings | Pick a companion |
 |---|---|---|
-| <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/01-home.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/02-battery-settings.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/03-picker.png" width="240"> |
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/01-home.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/02-battery-settings.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/03-picker.png" width="240"> |
 
 | Make your own | On your phone, charging | Low battery |
 |---|---|---|
-| <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/04-editor.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/05-bar-charging.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/06-bar-low.png" width="240"> |
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/04-editor.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/05-bar-charging.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/06-bar-low.png" width="240"> |
+
+| No permission? Notification panel |
+|---|
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/07-notification-panel.png" width="240"> |
 
 ### Light on RAM and battery
 
@@ -94,10 +98,20 @@ app/src/main/java/com/melta/app/
 
 | Permission | Why |
 |---|---|
-| Display over other apps | Draws the bar on top of the status bar. The window is not touchable and never reads screen content. |
-| Notifications | Android requires a notification for the service that keeps the bar alive. It is silent and minimized. |
+| Display over other apps | Optional. Draws the bar on top of the status bar. The window is not touchable and never reads screen content. Without it, the bar shows in the notification panel instead. |
+| Notifications | Needed for the notification panel bar, and Android requires a notification for the service that keeps the bar alive. It is silent. |
 | Run at startup | Brings the bar back after a reboot, only if you had it on. |
 | Internet | Only for the optional animated sprites. Each is downloaded once and cached on the device. |
+
+### "Display over other apps" is greyed out
+
+Android 13 and newer lock this setting for apps installed from a browser or file manager
+("Restricted setting"). Melta keeps working in the notification panel meanwhile. To unlock the
+status bar mode:
+
+1. Open **Settings > Apps > Melta** (or tap **Open App info** in Melta).
+2. Tap the **⋮** menu in the top right corner, then **Allow restricted settings**.
+3. Go back to Melta and tap **Grant permission**.
 
 ## Build and install
 

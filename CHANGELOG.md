@@ -4,7 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] Unreleased
+## [0.2.0]
+
+### Added
+- Notification panel battery bar: your companion and battery level as a live card in the pull down panel, with charge time remaining. Works without the "Display over other apps" permission
+- "Show it in" choice between the status bar and the notification panel
+- Help for the greyed out "Display over other apps" toggle (Android restricted settings), with a shortcut to App info
+
+### Changed
+- Turning the bar on never gets stuck on the permission screen anymore. Without the overlay permission Melta falls back to the notification panel automatically
+
+## [0.1.0]
 
 ### Added
 - All 1025 Pokémon sprites (normal and shiny) bundled in the APK at build time, so the picker works offline

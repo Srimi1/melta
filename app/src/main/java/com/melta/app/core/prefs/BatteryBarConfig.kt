@@ -12,6 +12,15 @@ enum class SpriteSizeMode {
     TRUE_SIZE,
 }
 
+/** Where the battery bar is shown. */
+enum class BarMode {
+    /** Drawn over the status bar. Needs the "Display over other apps" permission. */
+    OVERLAY,
+
+    /** A live card in the notification panel. Needs no special permission. */
+    NOTIFICATION,
+}
+
 /** Where the bar itself is drawn. */
 enum class BarPosition { STATUS_BAR_BOTTOM, SCREEN_TOP }
 
@@ -40,6 +49,7 @@ data class BatteryBarConfig(
     val bob: Boolean = true,
 
     // Bar
+    val barMode: BarMode = BarMode.OVERLAY,
     val position: BarPosition = BarPosition.STATUS_BAR_BOTTOM,
     val barThicknessDp: Int = 3,
     val opacity: Float = 0.8f,

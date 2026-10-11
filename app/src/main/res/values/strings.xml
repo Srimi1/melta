@@ -23,9 +23,7 @@
     <!-- Battery bar -->
     <string name="battery_bar">Battery Bar</string>
     <string name="show_bar">Show battery bar</string>
-    <string name="show_bar_desc">Draws over the status bar on every screen</string>
-    <string name="perm_title">One permission needed</string>
-    <string name="perm_body">Melta needs \"Display over other apps\" to draw the battery bar on top of your status bar. It never reads what is on screen and never blocks your taps.</string>
+    <string name="show_bar_desc">On your status bar, or in the notification panel</string>
     <string name="perm_grant">Grant permission</string>
     <string name="sim_charging">Simulate charging</string>
     <string name="sim_level">Simulated level</string>
@@ -93,4 +91,21 @@
     <string name="notif_running">Battery bar is on</string>
     <string name="notif_guarding">%1$s is watching your battery</string>
     <string name="hide_bar">Turn off</string>
+    <string name="channel_companion">Battery companion</string>
+    <string name="channel_companion_desc">Your Pokémon and battery bar in the notification panel. Silent.</string>
+    <string name="notif_bar_title">%1$s · %2$d%%</string>
+    <string name="notif_charging">Charging</string>
+    <string name="notif_charging_eta">Charging · full in %1$s</string>
+    <string name="notif_low">Low battery, time to charge</string>
+    <string name="notif_on_battery">On battery</string>
+
+    <!-- Where the bar is shown -->
+    <string name="show_in">Show it in</string>
+    <string name="mode_overlay">Status bar</string>
+    <string name="mode_notification">Notification panel</string>
+    <string name="perm_fallback_title">Showing in the notification panel for now</string>
+    <string name="perm_fallback_body">To put your companion right on the status bar, allow \"Display over other apps\".</string>
+    <string name="perm_greyed_out">Toggle greyed out?</string>
+    <string name="perm_restricted_steps">Android locks this setting for apps installed outside the Play Store. To unlock it:\n1. Tap Open App info below.\n2. Tap the ⋮ menu in the top right corner.\n3. Tap Allow restricted settings and confirm.\n4. Come back and tap Grant permission.</string>
+    <string name="open_app_info">Open App info</string>
 </resources>
