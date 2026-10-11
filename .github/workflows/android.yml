@@ -45,7 +45,7 @@ jobs:
           [ "$count" -ge 2000 ] || { echo "Expected at least 2000 sprites"; exit 1; }
 
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: melta-debug-apk
           path: app/build/outputs/apk/debug/*.apk
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload reports
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reports
           path: |
