@@ -36,15 +36,28 @@ Real captures from an Android 14 emulator, made by the [Screenshots workflow](.g
 
 | Home | Battery Bar settings | Pick a companion |
 |---|---|---|
-| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/01-home.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/02-battery-settings.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/03-picker.png" width="240"> |
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/01-home.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/02-battery-settings.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/03-picker.png" width="240"> |
 
 | Make your own | On your phone, charging | Low battery |
 |---|---|---|
-| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/04-editor.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/05-bar-charging.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/06-bar-low.png" width="240"> |
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/04-editor.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/05-bar-charging.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/06-bar-low.png" width="240"> |
 
-| No permission? Notification panel |
-|---|
-| <img src="https://github.com/Srimi1/melta/releases/download/v0.2.0/07-notification-panel.png" width="240"> |
+| No permission? Notification panel | Stage 2: Shade settings | Themed card in the shade |
+|---|---|---|
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/07-notification-panel.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/08-shade-screen.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.3.0/09-themed-card.png" width="240"> |
+
+## Stage 2: Notification Shade
+
+Android does not let apps restyle the system shade without root, so Melta upgrades it from the inside,
+with **no special permissions**:
+
+| | |
+|---|---|
+| **Companion card** | Your Pokémon riding the battery bar as a card in the pull down panel, with charge time remaining. Shown in both bar modes. |
+| **Card themes** | System, Pokédex, Game Boy (with a green tinted sprite), Neon and Night. |
+| **Quick Settings tiles** | *Companion* shows your Pokémon and battery level and turns the bar on or off. *Pokémon of the day* swaps in a new companion every day. Add them with one tap on Android 13+. |
+
+Next up: **Melta Shade**, Melta's own swipe down shade with your notifications, quick toggles and companion.
 
 ### Light on RAM and battery
 
@@ -138,7 +151,8 @@ No setup at all? Every push builds a debug APK in GitHub Actions. Open the lates
 Melta grows one module per stage. See [ROADMAP.md](ROADMAP.md) for details.
 
 - [x] **Stage 1:** Pokémon Battery Bar
-- [ ] **Stage 2:** Notification shade themes
+- [x] **Stage 2a:** Notification shade card themes and Quick Settings tiles
+- [ ] **Stage 2b:** Melta Shade, a full custom shade
 - [ ] **Stage 3:** Lock screen companions and clocks
 - [ ] **Stage 4:** Battery aware live wallpapers
 - [ ] **Stage 5:** Icon studio

@@ -13,8 +13,9 @@ Melta is built in stages. Each stage adds one self contained module under
 
 ## Stage 2: Notification shade
 
-- Themed backgrounds and accents for notifications
-- Companion that appears when the shade is pulled down
+- ✅ Themed companion card in the shade (System, Pokédex, Game Boy, Neon, Night)
+- ✅ Quick Settings tiles: Companion and Pokémon of the day
+- ⏳ Melta Shade: Melta's own swipe down shade with notifications, quick toggles and the companion
 
 ## Stage 3: Lock screen
 

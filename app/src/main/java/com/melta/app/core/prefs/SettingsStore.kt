@@ -45,6 +45,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         val bob = booleanPreferencesKey("bb_bob")
         val position = stringPreferencesKey("bb_position")
         val barMode = stringPreferencesKey("bb_mode")
+        val shadeCard = booleanPreferencesKey("shade_card")
+        val cardTheme = stringPreferencesKey("shade_card_theme")
         val thickness = intPreferencesKey("bb_thickness")
         val opacity = floatPreferencesKey("bb_opacity")
         val fillStyle = stringPreferencesKey("bb_fill_style")
@@ -77,6 +79,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
             bob = this[K.bob] ?: d.bob,
             position = enumOr(this[K.position], d.position),
             barMode = enumOr(this[K.barMode], d.barMode),
+            shadeCard = this[K.shadeCard] ?: d.shadeCard,
+            cardTheme = enumOr(this[K.cardTheme], d.cardTheme),
             barThicknessDp = this[K.thickness] ?: d.barThicknessDp,
             opacity = (this[K.opacity] ?: d.opacity)
                 .coerceIn(BatteryBarConfig.MIN_OPACITY, BatteryBarConfig.MAX_OPACITY),
@@ -109,6 +113,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         this[K.bob] = c.bob
         this[K.position] = c.position.name
         this[K.barMode] = c.barMode.name
+        this[K.shadeCard] = c.shadeCard
+        this[K.cardTheme] = c.cardTheme.name
         this[K.thickness] = c.barThicknessDp
         this[K.opacity] = c.opacity
         this[K.fillStyle] = c.fillStyle.name

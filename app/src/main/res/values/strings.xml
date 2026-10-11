@@ -12,7 +12,7 @@
     <string name="module_battery">Battery Bar</string>
     <string name="module_battery_desc">A Pokémon sits on your battery level and reacts when you charge</string>
     <string name="module_shade">Notification Shade</string>
-    <string name="module_shade_desc">Themes and layouts for the pull down panel</string>
+    <string name="module_shade_desc">Companion card themes and Quick Settings tiles for your pull down panel</string>
     <string name="module_lock">Lock Screen</string>
     <string name="module_lock_desc">Clocks, widgets and companions on the lock screen</string>
     <string name="module_wallpaper">Live Wallpapers</string>
@@ -108,4 +108,25 @@
     <string name="perm_greyed_out">Toggle greyed out?</string>
     <string name="perm_restricted_steps">Android locks this setting for apps installed outside the Play Store. To unlock it:\n1. Tap Open App info below.\n2. Tap the ⋮ menu in the top right corner.\n3. Tap Allow restricted settings and confirm.\n4. Come back and tap Grant permission.</string>
     <string name="open_app_info">Open App info</string>
+
+    <!-- Stage 2: notification shade -->
+    <string name="section_card">Companion card</string>
+    <string name="shade_card">Show companion card in the shade</string>
+    <string name="shade_card_desc">Your Pokémon and battery bar as a card in the pull down panel</string>
+    <string name="card_theme">Card theme</string>
+    <string name="shade_needs_bar">The card appears in your notification shade while the battery bar is on.</string>
+    <string name="turn_on_bar">Turn on the battery bar</string>
+    <string name="section_tiles">Quick Settings tiles</string>
+    <string name="tiles_desc">Add Melta tiles to the quick toggles at the top of your shade.</string>
+    <string name="tiles_manual">You can also add them by hand: pull down the shade twice, tap the pencil (edit) icon, and drag the Melta tiles into place.</string>
+    <string name="add_companion_tile">Add Companion tile</string>
+    <string name="add_daily_tile">Add Pokémon of the day tile</string>
+    <string name="tile_companion">Companion</string>
+    <string name="tile_daily">Pokémon of the day</string>
+    <string name="tile_level">%1$d%%</string>
+    <string name="tile_level_charging">%1$d%% · Charging</string>
+    <string name="tile_added">Tile added</string>
+    <string name="tile_already_added">That tile is already in your Quick Settings</string>
+    <string name="melta_shade_title">Melta Shade</string>
+    <string name="melta_shade_soon">Coming next: swipe down for Melta\'s own shade with your notifications, quick toggles and companion.</string>
 </resources>

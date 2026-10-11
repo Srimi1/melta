@@ -83,5 +83,17 @@ adb shell cmd statusbar expand-notifications
 shot 07-notification-panel 5
 adb shell cmd statusbar collapse
 
+# Stage 2: the Shade screen, then a themed card in the real shade.
+adb shell appops set "$PKG" SYSTEM_ALERT_WINDOW allow
+open_screen --es melta.screen shade
+shot 08-shade-screen 7
+open_screen --es melta.screen shade --es melta.theme pokedex --ez melta.demo true
+sleep 6
+adb shell input keyevent KEYCODE_HOME
+sleep 2
+adb shell cmd statusbar expand-notifications
+shot 09-themed-card 5
+adb shell cmd statusbar collapse
+
 adb shell dumpsys battery reset
 ls -la "$OUT"

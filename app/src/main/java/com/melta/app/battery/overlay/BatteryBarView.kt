@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
 import android.graphics.LinearGradient
 import android.graphics.Matrix
 import android.graphics.Paint
@@ -55,6 +56,13 @@ class BatteryBarView @JvmOverloads constructor(
         }
 
     private var sprite: LoadedSprite? = null
+
+    /** Optional tint for the companion, e.g. the Game Boy green of the shade card theme. */
+    var spriteColorFilter: ColorFilter? = null
+        set(value) {
+            field = value
+            invalidate()
+        }
     private var effect: ChargeEffect = ChargeEffect.SPARKS
     private val particles = ParticleSystem(density)
 
@@ -380,7 +388,13 @@ class BatteryBarView @JvmOverloads constructor(
         }
         canvas.scale(sx, 1f, pivotX, pivotY)
         if (low) canvas.rotate(-10f, pivotX, pivotY)
-        d.draw(canvas)
+        if (spriteColorFilter != null) {
+            d.colorFilter = spriteColorFilter
+            d.draw(canvas)
+            d.colorFilter = null
+        } else {
+            d.draw(canvas)
+        }
         canvas.restore()
     }
 

@@ -50,7 +50,7 @@ private data class Module(
 
 private val modules = listOf(
     Module(R.string.module_battery, R.string.module_battery_desc, Icons.Filled.BatteryChargingFull, 1, true),
-    Module(R.string.module_shade, R.string.module_shade_desc, Icons.Filled.Notifications, 2, false),
+    Module(R.string.module_shade, R.string.module_shade_desc, Icons.Filled.Notifications, 2, true),
     Module(R.string.module_lock, R.string.module_lock_desc, Icons.Filled.Lock, 3, false),
     Module(R.string.module_wallpaper, R.string.module_wallpaper_desc, Icons.Filled.Wallpaper, 4, false),
     Module(R.string.module_icons, R.string.module_icons_desc, Icons.Filled.GridView, 5, false),
@@ -58,7 +58,7 @@ private val modules = listOf(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(onOpenBattery: () -> Unit) {
+fun HomeScreen(onOpenBattery: () -> Unit, onOpenShade: () -> Unit) {
     Scaffold(
         topBar = {
             LargeTopAppBar(
@@ -93,7 +93,12 @@ fun HomeScreen(onOpenBattery: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             items(modules) { m ->
-                ModuleCard(m, onClick = if (m.ready) onOpenBattery else null)
+                val open = when (m.title) {
+                    R.string.module_battery -> onOpenBattery
+                    R.string.module_shade -> onOpenShade
+                    else -> null
+                }
+                ModuleCard(m, onClick = if (m.ready) open else null)
             }
         }
     }

@@ -21,6 +21,9 @@ enum class BarMode {
     NOTIFICATION,
 }
 
+/** Looks for the companion card in the notification shade. */
+enum class CardTheme { SYSTEM, POKEDEX, GAMEBOY, NEON, NIGHT }
+
 /** Where the bar itself is drawn. */
 enum class BarPosition { STATUS_BAR_BOTTOM, SCREEN_TOP }
 
@@ -59,6 +62,11 @@ data class BatteryBarConfig(
     /** Take the bar colors from the companion itself, e.g. a yellow bar for Pikachu. */
     val matchColors: Boolean = true,
     val customTilePath: String? = null,
+
+    // Notification shade
+    /** Show the themed companion card in the shade, also while the status bar overlay is on. */
+    val shadeCard: Boolean = true,
+    val cardTheme: CardTheme = CardTheme.SYSTEM,
 
     // Charging
     val effect: ChargeEffect = ChargeEffect.AUTO,

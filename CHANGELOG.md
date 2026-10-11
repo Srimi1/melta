@@ -4,6 +4,15 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0]
+
+### Added
+- Stage 2: Notification Shade screen
+- Companion card themes: System, Pokédex, Game Boy, Neon and Night
+- The companion card can now show in the shade while the status bar overlay is on too
+- Quick Settings tiles: Companion (battery level, bar on and off) and Pokémon of the day
+- Long press a Melta tile to open the Shade settings
+
 ## [0.2.0]
 
 ### Added

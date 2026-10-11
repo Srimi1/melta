@@ -28,13 +28,12 @@ import com.melta.app.MainActivity
 import com.melta.app.R
 import com.melta.app.battery.overlay.BatteryBarView
 import com.melta.app.battery.sprites.LoadedSprite
-import com.melta.app.battery.sprites.Pokedex
 import com.melta.app.battery.sprites.SpriteLoader
 import com.melta.app.core.prefs.BarMode
 import com.melta.app.core.prefs.BarModes
-import com.melta.app.core.prefs.BarPosition
 import com.melta.app.core.prefs.BatteryBarConfig
 import com.melta.app.core.prefs.SettingsStore
+import com.melta.app.shade.CompanionCard
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -66,6 +65,9 @@ class BatteryOverlayService : Service() {
     private var level = -1
     private var charging = false
     private var snapshotView: BatteryBarView? = null
+    private var cardSprite: LoadedSprite? = null
+    private var cardSpriteKey: String? = null
+    private var cardJob: Job? = null
     private var lastNotificationKey: String? = null
 
     private val batteryReceiver = object : BroadcastReceiver() {
@@ -206,6 +208,7 @@ class BatteryOverlayService : Service() {
         if (actual != mode) {
             mode = actual
             spriteKey = null // the two modes use differently sized sprites
+            cardSpriteKey = null
             lastNotificationKey = null
         }
     }
@@ -245,7 +248,7 @@ class BatteryOverlayService : Service() {
         charging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
             status == BatteryManager.BATTERY_STATUS_FULL && intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, 0) != 0
         view?.setBattery(this.level, charging)
-        if (mode == BarMode.NOTIFICATION) postBarNotification()
+        if (cardActive()) postBarNotification()
     }
 
     private fun onConfig(newConfig: BatteryBarConfig) {
@@ -262,29 +265,42 @@ class BatteryOverlayService : Service() {
             updateWindowSize()
         }
 
-        val key = "${newConfig.spriteKey}:$mode"
-        if (key != spriteKey) {
-            spriteKey = key
+        // The overlay gets its own (possibly animated) sprite, sized for the status bar.
+        val overlayKey = if (mode == BarMode.OVERLAY) newConfig.spriteKey else null
+        if (overlayKey != spriteKey) {
+            spriteKey = overlayKey
             spriteJob?.cancel()
-            spriteJob = scope.launch {
-                val loaded = if (mode == BarMode.OVERLAY) {
+            if (overlayKey != null) {
+                spriteJob = scope.launch {
                     val target = BatteryBarView.spriteTargetHeightPx(newConfig, statusBarHeight(), resources.displayMetrics.density)
-                    SpriteLoader.load(this@BatteryOverlayService, newConfig, target)
-                } else {
-                    val snap = snapshotConfig(newConfig)
-                    val target = BatteryBarView.spriteTargetHeightPx(snap, snapshotHeight(), resources.displayMetrics.density)
-                    SpriteLoader.load(this@BatteryOverlayService, snap, target)
+                    val loaded = SpriteLoader.load(this@BatteryOverlayService, newConfig, target)
+                    sprite = loaded
+                    view?.setSprite(loaded)
+                    updateWindowSize()
                 }
-                sprite = loaded
-                view?.setSprite(loaded)
-                updateWindowSize()
-                lastNotificationKey = null
-                updateNotification()
             }
-        } else {
-            updateNotification()
         }
+
+        // The shade card gets a bigger still sprite.
+        val cardKey = if (cardActive()) CompanionCard.snapshotConfig(newConfig).spriteKey else null
+        if (cardKey != cardSpriteKey) {
+            cardSpriteKey = cardKey
+            cardJob?.cancel()
+            if (cardKey != null) {
+                cardJob = scope.launch {
+                    val snap = CompanionCard.snapshotConfig(newConfig)
+                    val target = BatteryBarView.spriteTargetHeightPx(snap, CompanionCard.heightPx(this@BatteryOverlayService), resources.displayMetrics.density)
+                    cardSprite = SpriteLoader.load(this@BatteryOverlayService, snap, target)
+                    lastNotificationKey = null
+                    updateNotification()
+                }
+            }
+        }
+        updateNotification()
     }
+
+    /** The themed card shows in the shade in notification mode, and in overlay mode if wanted. */
+    private fun cardActive() = mode == BarMode.NOTIFICATION || config.shadeCard
 
     // ---------------------------------------------------------------- notification
 
@@ -314,39 +330,22 @@ class BatteryOverlayService : Service() {
         ServiceCompat.startForeground(this, NOTIFICATION_ID, buildNotification(null), type)
     }
 
-    private fun companionName(c: BatteryBarConfig): String? =
-        if (c.useCustomSprite) getString(R.string.your_creation) else Pokedex.find(this, c.pokemonId)?.name
-
     private fun updateNotification() {
-        if (mode == BarMode.NOTIFICATION) {
+        if (cardActive()) {
             postBarNotification()
         } else {
+            lastNotificationKey = null
             val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            runCatching { nm.notify(NOTIFICATION_ID, buildNotification(companionName(config))) }
+            runCatching { nm.notify(NOTIFICATION_ID, buildNotification(CompanionCard.companionName(this, config))) }
         }
     }
 
-    // ---------------------------------------------------------------- notification panel bar
-
-    /** Look used inside the notification: a thicker bar, a bigger still sprite, no percent text. */
-    private fun snapshotConfig(c: BatteryBarConfig) = c.copy(
-        position = BarPosition.STATUS_BAR_BOTTOM,
-        barThicknessDp = c.barThicknessDp.coerceAtLeast(6),
-        spriteSizeDp = 44,
-        showPercent = false,
-        animated = false,
-    )
-
-    private fun dp(v: Int) = (v * resources.displayMetrics.density).toInt()
-
-    private fun snapshotHeight() = dp(60)
-
-    private fun snapshotWidth() = (resources.displayMetrics.widthPixels - dp(64)).coerceIn(dp(200), dp(400))
+    // ---------------------------------------------------------------- shade companion card
 
     /** Re-posts the card only when something visible changed, so it costs nothing while idle. */
     private fun postBarNotification() {
-        if (!configLoaded || mode != BarMode.NOTIFICATION || level < 0) return
-        val key = "$level:$charging:$spriteKey:${config.copy(enabled = true).hashCode()}"
+        if (!configLoaded || !cardActive() || level < 0) return
+        val key = "$level:$charging:$cardSpriteKey:${cardSprite.hashCode()}:${config.copy(enabled = true).hashCode()}"
         if (key == lastNotificationKey) return
         lastNotificationKey = key
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -355,42 +354,13 @@ class BatteryOverlayService : Service() {
 
     private fun renderBar(): Bitmap {
         val v = snapshotView ?: BatteryBarView(this).also { snapshotView = it }
-        v.applyConfig(snapshotConfig(config))
-        if (v.tag !== sprite) {
-            v.tag = sprite
-            v.setSprite(sprite)
-        }
-        v.setBattery(level.coerceAtLeast(0), charging)
-        val full = v.renderSnapshot(snapshotWidth(), snapshotHeight())
-        // Keep the notification parcel small: big bitmaps can exceed the binder limit.
-        if (full.width <= MAX_NOTIFICATION_BITMAP_WIDTH) return full
-        val h = full.height * MAX_NOTIFICATION_BITMAP_WIDTH / full.width
-        return Bitmap.createScaledBitmap(full, MAX_NOTIFICATION_BITMAP_WIDTH, h, true).also { full.recycle() }
-    }
-
-    private fun barTexts(): Pair<String, String> {
-        val name = companionName(config) ?: getString(R.string.app_name)
-        val title = getString(R.string.notif_bar_title, name, level.coerceAtLeast(0))
-        val subtitle = when {
-            charging -> {
-                val remaining = if (Build.VERSION.SDK_INT >= 28) {
-                    (getSystemService(BATTERY_SERVICE) as BatteryManager).computeChargeTimeRemaining()
-                } else {
-                    -1L
-                }
-                BarModes.formatChargeTime(remaining)?.let { getString(R.string.notif_charging_eta, it) }
-                    ?: getString(R.string.notif_charging)
-            }
-            level <= config.lowThreshold -> getString(R.string.notif_low)
-            else -> getString(R.string.notif_on_battery)
-        }
-        return title to subtitle
+        return CompanionCard.render(this, v, config, cardSprite, level, charging)
     }
 
     private fun buildBarNotification(): Notification {
         val bar = renderBar()
         val small = Bitmap.createScaledBitmap(bar, bar.width / 2, bar.height / 2, true)
-        val (title, subtitle) = barTexts()
+        val (title, subtitle) = CompanionCard.texts(this, config, level, charging)
         val collapsed = RemoteViews(packageName, R.layout.notification_bar_small).apply {
             setImageViewBitmap(R.id.bar_image, small)
             setTextViewText(R.id.bar_title, title)
@@ -447,17 +417,16 @@ class BatteryOverlayService : Service() {
     companion object {
         private const val CHANNEL_ID = "battery_bar"
         private const val COMPANION_CHANNEL_ID = "battery_companion"
-        private const val MAX_NOTIFICATION_BITMAP_WIDTH = 600
         private const val NOTIFICATION_ID = 42
         private const val ACTION_STOP = "com.melta.app.action.STOP_BATTERY_BAR"
 
-        fun start(context: Context) {
+        /** Starts the bar. Returns false if Android refused, e.g. from the background. */
+        fun start(context: Context): Boolean =
             // Background start limits can still refuse us in rare cases. Never crash over it,
             // the bar comes back the next time the app is opened.
             runCatching {
                 ContextCompat.startForegroundService(context, Intent(context, BatteryOverlayService::class.java))
-            }
-        }
+            }.isSuccess
 
         fun stop(context: Context) {
             context.stopService(Intent(context, BatteryOverlayService::class.java))
