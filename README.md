@@ -30,6 +30,18 @@ status bar with a Pokémon companion sitting on it, reacting when you plug in.
 | **Bar styling** | Solid, gradient, rainbow, stripes, dots, checker or your own pattern. Thickness, opacity, colors and position are all adjustable. |
 | **Stays out of the way** | Never blocks taps, hides in landscape and fullscreen apps, and stops animating when the screen is off. |
 
+## Screenshots
+
+Real captures from an Android 14 emulator, made by the [Screenshots workflow](.github/workflows/screenshots.yml).
+
+| Home | Battery Bar settings | Pick a companion |
+|---|---|---|
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/01-home.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/02-battery-settings.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/03-picker.png" width="240"> |
+
+| Make your own | On your phone, charging | Low battery |
+|---|---|---|
+| <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/04-editor.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/05-bar-charging.png" width="240"> | <img src="https://github.com/Srimi1/melta/releases/download/v0.1.0/06-bar-low.png" width="240"> |
+
 ### Light on RAM and battery
 
 The overlay was designed to be a "built in" feeling feature, not another heavy app.
