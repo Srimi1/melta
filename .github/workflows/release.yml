@@ -29,7 +29,7 @@ jobs:
           distribution: temurin
           java-version: "17"
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       # Optional: add MELTA_KEYSTORE_BASE64, MELTA_KEYSTORE_PASSWORD, MELTA_KEY_ALIAS and
       # MELTA_KEY_PASSWORD as repository secrets to sign with your own key.
