@@ -1,5 +1,6 @@
 package com.melta.app.shade.tiles
 
+import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Intent
 import android.graphics.drawable.Icon
@@ -82,7 +83,13 @@ internal fun launchFromTile(service: TileService, intent: Intent) {
             PendingIntent.getActivity(service, 7, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT),
         )
     } else {
-        @Suppress("DEPRECATION")
-        service.startActivityAndCollapse(intent)
+        startActivityAndCollapseLegacy(service, intent)
     }
+}
+
+/** Android 13 and older only accept an Intent here. Never called on 14+, where it would throw. */
+@SuppressLint("StartActivityAndCollapseDeprecated")
+@Suppress("DEPRECATION")
+private fun startActivityAndCollapseLegacy(service: TileService, intent: Intent) {
+    service.startActivityAndCollapse(intent)
 }
