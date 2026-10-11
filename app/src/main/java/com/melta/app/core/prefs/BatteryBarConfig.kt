@@ -3,6 +3,15 @@ package com.melta.app.core.prefs
 /** Where the companion stands along the bar. */
 enum class SpriteAnchor { FOLLOW_LEVEL, LEFT, CENTER, RIGHT }
 
+/** How big each Pokémon is drawn. */
+enum class SpriteSizeMode {
+    /** Every companion is scaled to the same height. */
+    FIT,
+
+    /** Keeps the relative sizes from the games, so Pichu stays smaller than Snorlax. */
+    TRUE_SIZE,
+}
+
 /** Where the bar itself is drawn. */
 enum class BarPosition { STATUS_BAR_BOTTOM, SCREEN_TOP }
 
@@ -24,8 +33,10 @@ data class BatteryBarConfig(
     val useCustomSprite: Boolean = false,
     val customSpritePath: String? = null,
     val spriteSizeDp: Int = 22,
+    val sizeMode: SpriteSizeMode = SpriteSizeMode.FIT,
     val anchor: SpriteAnchor = SpriteAnchor.FOLLOW_LEVEL,
-    val flip: Boolean = false,
+    // Sprites face left, so by default flip them to look along the bar toward the empty part.
+    val flip: Boolean = true,
     val bob: Boolean = true,
 
     // Bar
@@ -35,6 +46,8 @@ data class BatteryBarConfig(
     val fillStyle: FillStyle = FillStyle.GRADIENT,
     val colorStart: Int = 0xFFFFD54F.toInt(),
     val colorEnd: Int = 0xFFFF7043.toInt(),
+    /** Take the bar colors from the companion itself, e.g. a yellow bar for Pikachu. */
+    val matchColors: Boolean = true,
     val customTilePath: String? = null,
 
     // Charging
@@ -51,9 +64,9 @@ data class BatteryBarConfig(
     /** Identity of the sprite. When this changes the service reloads the bitmap. */
     val spriteKey: String
         get() = if (useCustomSprite && customSpritePath != null) {
-            "custom:$customSpritePath:$spriteSizeDp"
+            "custom:$customSpritePath:$spriteSizeDp:$sizeMode"
         } else {
-            "pokemon:$pokemonId:$shiny:$animated:$spriteSizeDp"
+            "pokemon:$pokemonId:$shiny:$animated:$spriteSizeDp:$sizeMode"
         }
 
     companion object {

@@ -5,8 +5,9 @@ import com.melta.app.core.net.Http
 import java.io.File
 
 /**
- * Downloads Pokémon sprites from the public PokeAPI sprite repository and keeps them in app
- * storage. Nothing is bundled in the APK, and each sprite is only fetched once.
+ * Where Pokémon sprites come from. Every still sprite (normal and shiny) ships inside the APK,
+ * gathered at build time from the public PokeAPI sprite repository. Animated sprites are
+ * downloaded once on first use and kept in app storage.
  */
 object SpriteRepository {
 
@@ -20,6 +21,26 @@ object SpriteRepository {
         return if (shiny) "$dir/shiny/$id.gif" else "$dir/$id.gif"
     }
 
+    // ---------------------------------------------------------------- bundled pack
+
+    /** Path of a sprite inside the APK. The build packs every Pokémon here (see SpritePackTask). */
+    fun assetPath(id: Int, shiny: Boolean): String = if (shiny) "sprites/shiny/$id.png" else "sprites/$id.png"
+
+    @Volatile
+    private var packAvailable: Boolean? = null
+
+    /** True when this build carries the offline sprite pack. Checked once using Pikachu. */
+    fun hasPack(context: Context): Boolean =
+        packAvailable ?: runCatching { context.assets.open(assetPath(25, false)).close(); true }
+            .getOrDefault(false)
+            .also { packAvailable = it }
+
+    /** Image model for thumbnails: the bundled asset when present, otherwise the web URL. */
+    fun thumbnail(context: Context, id: Int, shiny: Boolean = false): String =
+        if (hasPack(context)) "file:///android_asset/${assetPath(id, shiny)}" else staticUrl(id, shiny)
+
+    // ---------------------------------------------------------------- downloads
+
     private fun dir(context: Context) = File(context.filesDir, "sprites")
 
     private fun file(context: Context, id: Int, shiny: Boolean, animated: Boolean): File {
@@ -31,17 +52,16 @@ object SpriteRepository {
         return File(dir(context), name)
     }
 
-    /**
-     * Returns a local file for the sprite, downloading it if needed. Animated sprites only exist
-     * for Gen 1 to 5, so for later Pokémon this quietly returns the static PNG instead.
-     */
-    suspend fun fetch(context: Context, id: Int, shiny: Boolean, animated: Boolean): File? {
-        val wantAnimated = animated && id in 1..PokemonEntry.MAX_ANIMATED_ID
-        if (wantAnimated) {
-            val gif = file(context, id, shiny, animated = true)
-            if (gif.exists() && gif.length() > 0) return gif
-            Http.download(animatedUrl(id, shiny), gif)?.let { return it }
-        }
+    /** Animated Gen 1 to 5 sprite, downloaded once on first use. Null if unavailable or offline. */
+    suspend fun fetchAnimated(context: Context, id: Int, shiny: Boolean): File? {
+        if (id !in 1..PokemonEntry.MAX_ANIMATED_ID) return null
+        val gif = file(context, id, shiny, animated = true)
+        if (gif.exists() && gif.length() > 0) return gif
+        return Http.download(animatedUrl(id, shiny), gif)
+    }
+
+    /** Still sprite download, only used by builds made without the sprite pack. */
+    suspend fun fetchStatic(context: Context, id: Int, shiny: Boolean): File? {
         val png = file(context, id, shiny, animated = false)
         if (png.exists() && png.length() > 0) return png
         return Http.download(staticUrl(id, shiny), png)

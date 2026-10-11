@@ -39,6 +39,11 @@
     <string name="animated_desc">Available for Gen 1 to 5, others use the still sprite</string>
     <string name="size">Size</string>
     <string name="where_it_sits">Where it sits</string>
+    <string name="size_mode">Scale</string>
+    <string name="match_colors">Match colors to companion</string>
+    <string name="match_colors_desc">The bar takes its colors from your Pokémon, like a yellow bar for Pikachu</string>
+    <string name="popular">Popular</string>
+    <string name="show_shiny">Show shiny forms</string>
     <string name="flip">Face the other way</string>
     <string name="bob">Idle bounce</string>
     <string name="bob_desc">A gentle breathing bounce. Turn off to save a little extra battery</string>

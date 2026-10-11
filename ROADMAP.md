@@ -6,6 +6,7 @@ Melta is built in stages. Each stage adds one self contained module under
 ## Stage 1: Battery Bar ✅
 
 - Status bar overlay with a Pokémon companion that rides the battery level
+- All 1025 Pokémon bundled for offline use, crisp scaling, colors matched to the companion
 - Type matched charging effects, full charge celebration, low battery mood
 - Pixel art editor for custom companions and bar patterns, image import
 - Low memory overlay service, boot persistence

@@ -38,6 +38,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         val useCustomSprite = booleanPreferencesKey("bb_use_custom_sprite")
         val customSpritePath = stringPreferencesKey("bb_custom_sprite_path")
         val spriteSize = intPreferencesKey("bb_sprite_size")
+        val sizeMode = stringPreferencesKey("bb_size_mode")
+        val matchColors = booleanPreferencesKey("bb_match_colors")
         val anchor = stringPreferencesKey("bb_anchor")
         val flip = booleanPreferencesKey("bb_flip")
         val bob = booleanPreferencesKey("bb_bob")
@@ -67,6 +69,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
             useCustomSprite = this[K.useCustomSprite] ?: d.useCustomSprite,
             customSpritePath = this[K.customSpritePath],
             spriteSizeDp = this[K.spriteSize] ?: d.spriteSizeDp,
+            sizeMode = enumOr(this[K.sizeMode], d.sizeMode),
+            matchColors = this[K.matchColors] ?: d.matchColors,
             anchor = enumOr(this[K.anchor], d.anchor),
             flip = this[K.flip] ?: d.flip,
             bob = this[K.bob] ?: d.bob,
@@ -96,6 +100,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         this[K.useCustomSprite] = c.useCustomSprite
         putOrRemove(K.customSpritePath, c.customSpritePath)
         this[K.spriteSize] = c.spriteSizeDp
+        this[K.sizeMode] = c.sizeMode.name
+        this[K.matchColors] = c.matchColors
         this[K.anchor] = c.anchor.name
         this[K.flip] = c.flip
         this[K.bob] = c.bob

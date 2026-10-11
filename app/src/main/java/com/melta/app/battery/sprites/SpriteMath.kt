@@ -1,6 +1,7 @@
 package com.melta.app.battery.sprites
 
 import com.melta.app.core.prefs.SpriteAnchor
+import com.melta.app.core.prefs.SpriteSizeMode
 
 /** Pure helpers kept free of Android types so they can be unit tested on the JVM. */
 object SpriteMath {
@@ -37,6 +38,34 @@ object SpriteMath {
         if (width <= 0 || height <= 0 || targetHeight <= 0) return 1 to 1
         val w = (width.toLong() * targetHeight / height).toInt().coerceAtLeast(1)
         return w to targetHeight
+    }
+
+    /** Height of the canvas every PokeAPI sprite is drawn on. Used as the TRUE_SIZE reference. */
+    const val SPRITE_CANVAS = 96
+
+    /**
+     * Picks the on-screen size for a trimmed sprite of (width, height).
+     *
+     * FIT aims for [targetHeight]. TRUE_SIZE aims for the sprite's share of the 96px game canvas,
+     * so small Pokémon stay small. Whenever a whole number multiple lands within 20% of the aim we
+     * use it, which keeps every pixel perfectly square and the art razor sharp.
+     */
+    fun pixelScale(
+        width: Int,
+        height: Int,
+        targetHeight: Int,
+        mode: SpriteSizeMode,
+        referenceHeight: Int = SPRITE_CANVAS,
+    ): Pair<Int, Int> {
+        if (width <= 0 || height <= 0 || targetHeight <= 0) return 1 to 1
+        val aim = when (mode) {
+            SpriteSizeMode.FIT -> targetHeight
+            SpriteSizeMode.TRUE_SIZE ->
+                (height.toLong() * targetHeight / referenceHeight.coerceAtLeast(1)).toInt().coerceIn(1, targetHeight)
+        }
+        val k = aim / height
+        if (k >= 1 && k * height * 5 >= aim * 4) return width * k to height * k
+        return fitHeight(width, height, aim)
     }
 
     /**

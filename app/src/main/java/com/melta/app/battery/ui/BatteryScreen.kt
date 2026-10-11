@@ -81,6 +81,7 @@ import com.melta.app.core.prefs.ChargeEffect
 import com.melta.app.core.prefs.FillStyle
 import com.melta.app.core.prefs.SettingsStore
 import com.melta.app.core.prefs.SpriteAnchor
+import com.melta.app.core.prefs.SpriteSizeMode
 import kotlinx.coroutines.launch
 import java.io.File
 import kotlin.math.roundToInt
@@ -255,7 +256,7 @@ private fun CompanionSection(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
-                model = if (custom) File(config.customSpritePath!!) else SpriteRepository.staticUrl(config.pokemonId, config.shiny),
+                model = if (custom) File(config.customSpritePath!!) else SpriteRepository.thumbnail(context, config.pokemonId, config.shiny),
                 contentDescription = null,
                 filterQuality = FilterQuality.None,
                 modifier = Modifier
@@ -289,6 +290,14 @@ private fun CompanionSection(
         }
         SliderRow(stringResource(R.string.size), config.spriteSizeDp.toFloat(), 12f..48f, "${config.spriteSizeDp} dp") { v ->
             update { it.copy(spriteSizeDp = v.roundToInt()) }
+        }
+        if (!custom) {
+            ChoiceChips(
+                stringResource(R.string.size_mode),
+                SpriteSizeMode.entries.toList(),
+                config.sizeMode,
+                label = { if (it == SpriteSizeMode.FIT) "Same height" else "True size" },
+            ) { v -> update { it.copy(sizeMode = v) } }
         }
         ChoiceChips(
             stringResource(R.string.where_it_sits),
@@ -339,9 +348,21 @@ private fun BarSection(
         ) { v -> update { it.copy(fillStyle = v) } }
 
         if (config.fillStyle != FillStyle.RAINBOW && config.fillStyle != FillStyle.CUSTOM) {
-            SwatchRow(stringResource(R.string.color_main), config.colorStart) { c -> update { it.copy(colorStart = c) } }
-            if (config.fillStyle != FillStyle.SOLID) {
-                SwatchRow(stringResource(R.string.color_second), config.colorEnd) { c -> update { it.copy(colorEnd = c) } }
+            SwitchRow(
+                stringResource(R.string.match_colors),
+                config.matchColors,
+                subtitle = stringResource(R.string.match_colors_desc),
+            ) { v -> update { it.copy(matchColors = v) } }
+            if (!config.matchColors) {
+                // Picking a color by hand is a clear sign the user wants their own colors.
+                SwatchRow(stringResource(R.string.color_main), config.colorStart) { c ->
+                    update { it.copy(colorStart = c, matchColors = false) }
+                }
+                if (config.fillStyle != FillStyle.SOLID) {
+                    SwatchRow(stringResource(R.string.color_second), config.colorEnd) { c ->
+                        update { it.copy(colorEnd = c, matchColors = false) }
+                    }
+                }
             }
         }
 

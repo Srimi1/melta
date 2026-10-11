@@ -98,6 +98,7 @@ class BatteryBarView @JvmOverloads constructor(
         if (old.customTilePath != newConfig.customTilePath) loadCustomTile(newConfig.customTilePath)
         if (old.fillStyle != newConfig.fillStyle || old.colorStart != newConfig.colorStart ||
             old.colorEnd != newConfig.colorEnd || old.barThicknessDp != newConfig.barThicknessDp ||
+            old.matchColors != newConfig.matchColors ||
             old.customTilePath != newConfig.customTilePath
         ) {
             shaderDirty = true
@@ -118,6 +119,7 @@ class BatteryBarView @JvmOverloads constructor(
         effect = EffectPicker.resolve(config.effect, newSprite?.types.orEmpty())
         particles.effect = effect
         particles.clear()
+        if (config.matchColors) shaderDirty = true
         requestLayout()
         invalidate()
         ensureRunning()
@@ -312,7 +314,7 @@ class BatteryBarView @JvmOverloads constructor(
                 fillPaint.shader = fillShader
             } else {
                 fillPaint.shader = null
-                fillPaint.color = config.colorStart
+                fillPaint.color = startColor()
             }
             canvas.drawRoundRect(rect, radius, radius, fillPaint)
 
@@ -378,7 +380,7 @@ class BatteryBarView @JvmOverloads constructor(
         shaderDirty = false
         val thick = dp(config.barThicknessDp.toFloat()).toInt()
         fillShader = FillPatterns.build(
-            config.fillStyle, config.colorStart, config.colorEnd, w, thick, density,
+            config.fillStyle, startColor(), endColor(), w, thick, density,
             if (config.fillStyle == FillStyle.CUSTOM) customTile else null,
         )
         shineShader = LinearGradient(
@@ -389,6 +391,14 @@ class BatteryBarView @JvmOverloads constructor(
         )
         shinePaint.shader = shineShader
     }
+
+    /** Bar colors: taken from the companion when matching is on, otherwise the user's picks. */
+    private fun startColor(): Int = matchedPalette()?.get(0) ?: config.colorStart
+
+    private fun endColor(): Int = matchedPalette()?.get(1) ?: config.colorEnd
+
+    private fun matchedPalette(): IntArray? =
+        if (config.matchColors) sprite?.palette?.takeIf { it.size >= 2 } else null
 
     private fun loadCustomTile(path: String?) {
         customTile = path?.let { BitmapFactory.decodeFile(it) }

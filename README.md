@@ -20,7 +20,8 @@ status bar with a Pokémon companion sitting on it, reacting when you plug in.
 
 | | |
 |---|---|
-| **Every Pokémon** | All 1025 Pokémon, searchable by name, number or type. Normal or shiny. Gen 1 to 5 can use their animated sprites. |
+| **Every Pokémon, offline** | All 1025 Pokémon are built into the app, normal and shiny, so the picker works with no internet. Pikachu leads the Popular row. Search by name, number or type. Gen 1 to 5 can also use animated sprites, downloaded once on first use. |
+| **Made to fit the bar** | Every sprite is trimmed and scaled in whole pixel steps, so the art stays sharp at any size. Choose "Same height" for every companion or "True size" to keep Pichu smaller than Snorlax. The bar can take its colors from your companion, like a yellow bar for Pikachu. |
 | **Sits on your battery** | The companion rides the tip of the battery level, or parks left, center or right. It gently bounces while idle. |
 | **Charging effects** | Plug in and the bar starts flowing with a shine sweep, plus particles that match your companion's type: thunder for Electric, flames for Fire, bubbles for Water, leaves for Grass, hearts for Fairy, snow for Ice, sparks for the rest. Or pick any effect yourself. |
 | **Full charge celebration** | At 100% your companion spins around and bursts with joy. |
@@ -84,7 +85,7 @@ app/src/main/java/com/melta/app/
 | Display over other apps | Draws the bar on top of the status bar. The window is not touchable and never reads screen content. |
 | Notifications | Android requires a notification for the service that keeps the bar alive. It is silent and minimized. |
 | Run at startup | Brings the bar back after a reboot, only if you had it on. |
-| Internet | Downloads each Pokémon sprite once. Everything is cached on the device. |
+| Internet | Only for the optional animated sprites. Each is downloaded once and cached on the device. |
 
 ## Build and install
 
@@ -97,6 +98,10 @@ cd melta
 ./gradlew testDebugUnitTest       # unit tests
 ./gradlew installDebug            # install on a connected device
 ```
+
+The build gathers every Pokémon sprite into the APK (`./gradlew spritePack`, about 2 MB). The
+download is cached in `~/.gradle/caches/melta-sprites`, so it only happens once. Building offline?
+Add `-Pmelta.skipSpritePack=true` and the app falls back to downloading sprites when needed.
 
 No setup at all? Every push builds a debug APK in GitHub Actions. Open the latest
 [Android CI run](https://github.com/Srimi1/melta/actions/workflows/android.yml) and download the
@@ -118,9 +123,9 @@ Ideas, bug reports and pull requests are welcome. Please read [CONTRIBUTING.md](
 
 ## Credits and disclaimer
 
-* Pokémon names and type data come from [PokeAPI](https://pokeapi.co/) (BSD 3 Clause). Sprites are
-  downloaded at runtime from the [PokeAPI sprites](https://github.com/PokeAPI/sprites) repository.
-  **This repository does not contain any Pokémon artwork.**
+* Pokémon names and type data come from [PokeAPI](https://pokeapi.co/) (BSD 3 Clause). Sprites come
+  from the [PokeAPI sprites](https://github.com/PokeAPI/sprites) repository. They are gathered at build
+  time into the APK. **This repository does not contain any Pokémon artwork.**
 * Pokémon and Pokémon character names are trademarks of Nintendo, Creatures Inc. and GAME FREAK inc.
   Melta is an unofficial fan project, not affiliated with or endorsed by them, and is not sold.
 * The Melta icon and the "Melty" mascot are original artwork, released with the code under the MIT license.
