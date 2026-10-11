@@ -73,6 +73,20 @@ jobs:
           If the bar disappears after a while on Xiaomi, Oppo, Vivo or Samsung phones, set Melta's battery usage to **Unrestricted**.
           NOTES
 
+      # Create the tag with a plain git push first. The release step then only has to
+      # attach files to an existing tag, and if anything is refused git says exactly why.
+      - name: Create the tag
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --tags origin "refs/tags/${VERSION}" > /dev/null; then
+            echo "Tag ${VERSION} already exists"
+          else
+            git tag -a "${VERSION}" -m "Melta ${VERSION}" "${GITHUB_SHA}"
+            git push origin "refs/tags/${VERSION}"
+          fi
+
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
