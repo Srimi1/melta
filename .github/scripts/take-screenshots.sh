@@ -96,25 +96,27 @@ shot 09-themed-card 5
 adb shell cmd statusbar collapse
 
 # Melta Shade: turn on its accessibility service and notification access, post a few
-# notifications, then open the panel.
+# notifications, then open the panel. No force-stop from here on: stopping the app would
+# also unbind the accessibility service.
+adb shell am force-stop "$PKG"
+adb logcat -c
+adb shell appops set "$PKG" WRITE_SETTINGS allow || true
+adb shell cmd notification allow_listener "$PKG/com.melta.app.shade.custom.MeltaNotificationListener" || true
 adb shell settings put secure enabled_accessibility_services "$PKG/com.melta.app.shade.custom.MeltaShadeService"
 adb shell settings put secure accessibility_enabled 1
-adb shell cmd notification allow_listener "$PKG/com.melta.app.shade.custom.MeltaNotificationListener" || true
-adb shell appops set "$PKG" WRITE_SETTINGS allow || true
+for i in $(seq 1 40); do
+  if adb logcat -d -s MeltaShade:I | grep -q "service connected"; then echo "Melta Shade service connected"; break; fi
+  sleep 1
+done
 adb shell cmd notification post -S bigtext -t "Professor Oak" oak "Your Pokédex is 62% complete. Keep going!" || true
 adb shell cmd notification post -S bigtext -t "Misty" misty "Meet at Cerulean Gym at 5?" || true
 adb shell cmd notification post -S bigtext -t "Nurse Joy" joy "Your Pokémon are fully healed." || true
-# Wait until Android has actually bound the accessibility service.
-for i in $(seq 1 30); do
-  if adb shell dumpsys accessibility | grep -q "MeltaShadeService"; then echo "Melta Shade service bound"; break; fi
-  sleep 1
-done
-adb logcat -c
-open_screen --es melta.theme night --ez melta.openShade true
+sleep 3
+# NEW_TASK | CLEAR_TASK recreates the activity without killing the process.
+adb shell am start -W -f 0x10008000 -n "$COMP" --es melta.theme night --ez melta.openShade true > /dev/null
 shot 10-melta-shade 8
 echo "---- Melta Shade log ----"
 adb logcat -d -s MeltaShade:V AndroidRuntime:E | tail -n 60 || true
-adb shell dumpsys accessibility | grep -i -A3 "melta" | head -n 20 || true
 adb shell input keyevent KEYCODE_BACK
 
 adb shell dumpsys battery reset
