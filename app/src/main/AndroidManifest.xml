@@ -12,6 +12,20 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <!-- Download Pokémon sprites once, then they are cached on the device. -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Melta Shade: brightness and auto rotate toggles (granted by the user in Settings). -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+    <!-- Melta Shade: Do Not Disturb toggle (granted by the user in Settings). -->
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+
+    <!-- Melta Shade shows app names and icons next to notifications. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
 
     <application
         android:name=".MeltaApp"
@@ -66,6 +80,29 @@
             <property
                 android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
                 android:value="Draws a user customized battery level bar over the status bar." />
+        </service>
+
+        <service
+            android:name=".shade.custom.MeltaShadeService"
+            android:exported="false"
+            android:label="@string/melta_shade_title"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/melta_shade_service" />
+        </service>
+
+        <service
+            android:name=".shade.custom.MeltaNotificationListener"
+            android:exported="false"
+            android:label="@string/melta_shade_title"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
         </service>
 
         <receiver

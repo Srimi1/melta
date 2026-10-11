@@ -24,6 +24,9 @@ enum class BarMode {
 /** Looks for the companion card in the notification shade. */
 enum class CardTheme { SYSTEM, POKEDEX, GAMEBOY, NEON, NIGHT }
 
+/** Which part of the top edge opens Melta Shade. The rest still opens the system shade. */
+enum class TriggerZone { LEFT, RIGHT, FULL }
+
 /** Where the bar itself is drawn. */
 enum class BarPosition { STATUS_BAR_BOTTOM, SCREEN_TOP }
 
@@ -67,6 +70,9 @@ data class BatteryBarConfig(
     /** Show the themed companion card in the shade, also while the status bar overlay is on. */
     val shadeCard: Boolean = true,
     val cardTheme: CardTheme = CardTheme.SYSTEM,
+    /** Swipe down from the top edge opens Melta Shade (needs its accessibility service on). */
+    val customShade: Boolean = true,
+    val triggerZone: TriggerZone = TriggerZone.LEFT,
 
     // Charging
     val effect: ChargeEffect = ChargeEffect.AUTO,

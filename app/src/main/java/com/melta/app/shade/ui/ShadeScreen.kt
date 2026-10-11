@@ -133,18 +133,7 @@ fun ShadeScreen(onBack: () -> Unit) {
 
             item { TilesSection() }
 
-            item {
-                Card(Modifier.fillMaxWidth()) {
-                    Column(Modifier.padding(16.dp)) {
-                        Text(stringResource(R.string.melta_shade_title), style = MaterialTheme.typography.titleMedium)
-                        Text(
-                            stringResource(R.string.melta_shade_soon),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
+            item { MeltaShadeSection(config, update) }
         }
     }
 }

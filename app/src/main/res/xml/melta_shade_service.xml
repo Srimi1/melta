@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Melta Shade only uses this service to catch a swipe on the top edge and to draw its own panel.
+    It subscribes to no accessibility events and cannot read the content of any window.
+-->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeAnnouncement"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="false"
+    android:description="@string/a11y_description"
+    android:notificationTimeout="1000"
+    android:settingsActivity="com.melta.app.MainActivity" />

@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0]
+
+### Added
+- Melta Shade: Melta's own pull down shade, opened by swiping down on the top edge
+  - companion card header with clock and date, in your card theme
+  - quick toggles: Wi‑Fi, Internet, Bluetooth, flashlight, Do not disturb, auto rotate, sound,
+    battery bar, screenshot, lock screen, system shade
+  - brightness slider
+  - notifications grouped by app with tap to open, swipe to dismiss and clear all
+- Setup checklist with live status for each permission, and help for "restricted settings"
+- Choice of swipe area: left half, right half or the whole top edge
+
 ## [0.3.0]
 
 ### Added

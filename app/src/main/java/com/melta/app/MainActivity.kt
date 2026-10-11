@@ -19,6 +19,7 @@ import com.melta.app.battery.ui.PokemonPickerScreen
 import com.melta.app.core.prefs.CardTheme
 import com.melta.app.core.prefs.SettingsStore
 import com.melta.app.home.HomeScreen
+import com.melta.app.shade.custom.MeltaShadeService
 import com.melta.app.shade.ui.ShadeScreen
 import com.melta.app.ui.theme.MeltaTheme
 import kotlinx.coroutines.launch
@@ -33,6 +34,10 @@ class MainActivity : ComponentActivity() {
         val start = startStack(intent)
         if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_DEMO, false)) enableBarForDemo()
         if (BuildConfig.DEBUG) intent.getStringExtra(EXTRA_THEME)?.let(::setThemeForDemo)
+        if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_OPEN_SHADE, false)) {
+            // Give the service a moment to connect, then open Melta Shade for the screenshots.
+            window.decorView.postDelayed({ MeltaShadeService.instance?.openPanel() }, 1500)
+        }
         setContent {
             MeltaTheme {
                 MeltaNavHost(start)
@@ -78,6 +83,7 @@ class MainActivity : ComponentActivity() {
         const val EXTRA_SCREEN = "melta.screen"
         const val EXTRA_DEMO = "melta.demo"
         const val EXTRA_THEME = "melta.theme"
+        const val EXTRA_OPEN_SHADE = "melta.openShade"
     }
 }
 

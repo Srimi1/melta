@@ -47,6 +47,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         val barMode = stringPreferencesKey("bb_mode")
         val shadeCard = booleanPreferencesKey("shade_card")
         val cardTheme = stringPreferencesKey("shade_card_theme")
+        val customShade = booleanPreferencesKey("shade_custom")
+        val triggerZone = stringPreferencesKey("shade_trigger_zone")
         val thickness = intPreferencesKey("bb_thickness")
         val opacity = floatPreferencesKey("bb_opacity")
         val fillStyle = stringPreferencesKey("bb_fill_style")
@@ -81,6 +83,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
             barMode = enumOr(this[K.barMode], d.barMode),
             shadeCard = this[K.shadeCard] ?: d.shadeCard,
             cardTheme = enumOr(this[K.cardTheme], d.cardTheme),
+            customShade = this[K.customShade] ?: d.customShade,
+            triggerZone = enumOr(this[K.triggerZone], d.triggerZone),
             barThicknessDp = this[K.thickness] ?: d.barThicknessDp,
             opacity = (this[K.opacity] ?: d.opacity)
                 .coerceIn(BatteryBarConfig.MIN_OPACITY, BatteryBarConfig.MAX_OPACITY),
@@ -115,6 +119,8 @@ class SettingsStore private constructor(private val store: DataStore<Preferences
         this[K.barMode] = c.barMode.name
         this[K.shadeCard] = c.shadeCard
         this[K.cardTheme] = c.cardTheme.name
+        this[K.customShade] = c.customShade
+        this[K.triggerZone] = c.triggerZone.name
         this[K.thickness] = c.barThicknessDp
         this[K.opacity] = c.opacity
         this[K.fillStyle] = c.fillStyle.name

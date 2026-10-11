@@ -95,5 +95,19 @@ adb shell cmd statusbar expand-notifications
 shot 09-themed-card 5
 adb shell cmd statusbar collapse
 
+# Melta Shade: turn on its accessibility service and notification access, post a few
+# notifications, then open the panel.
+adb shell settings put secure enabled_accessibility_services "$PKG/com.melta.app.shade.custom.MeltaShadeService"
+adb shell settings put secure accessibility_enabled 1
+adb shell cmd notification allow_listener "$PKG/com.melta.app.shade.custom.MeltaNotificationListener" || true
+adb shell appops set "$PKG" WRITE_SETTINGS allow || true
+adb shell cmd notification post -S bigtext -t "Professor Oak" oak "Your Pokédex is 62% complete. Keep going!" || true
+adb shell cmd notification post -S bigtext -t "Misty" misty "Meet at Cerulean Gym at 5?" || true
+adb shell cmd notification post -S bigtext -t "Nurse Joy" joy "Your Pokémon are fully healed." || true
+sleep 4
+open_screen --es melta.theme night --ez melta.openShade true
+shot 10-melta-shade 8
+adb shell input keyevent KEYCODE_BACK
+
 adb shell dumpsys battery reset
 ls -la "$OUT"
