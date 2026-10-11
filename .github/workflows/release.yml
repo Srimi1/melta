@@ -40,8 +40,36 @@ jobs:
           ./gradlew --stacktrace assembleRelease
           cp app/build/outputs/apk/release/app-release.apk "melta-${GITHUB_REF_NAME}.apk"
 
+      - name: Check the sprite pack is in the APK
+        run: |
+          apk="melta-${GITHUB_REF_NAME}.apk"
+          count=$(unzip -l "$apk" | grep -cE 'assets/sprites/(shiny/)?[0-9]+\.png$')
+          echo "Sprites in APK: $count"
+          unzip -l "$apk" | grep -q 'assets/sprites/25.png$' || { echo "Pikachu is missing from the APK"; exit 1; }
+          [ "$count" -ge 2000 ] || { echo "Expected at least 2000 sprites"; exit 1; }
+
+      - name: Write release notes
+        run: |
+          cat > release-notes.md <<NOTES
+          ## Install on Android
+
+          1. Download **melta-${GITHUB_REF_NAME}.apk** below (under Assets).
+          2. Open it on your phone. If Android asks, allow your browser or file manager to install unknown apps.
+          3. Open **Melta**, tap **Battery Bar** and switch on **Show battery bar**.
+          4. Allow **Display over other apps** (and notifications on Android 13+).
+
+          Works on Android 8.0 and newer. All 1025 Pokémon are built in, so no internet is needed except for the optional animated sprites.
+
+          If the bar disappears after a while on Xiaomi, Oppo, Vivo or Samsung phones, set Melta's battery usage to **Unrestricted**.
+          NOTES
+
       - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
+          name: Melta ${{ github.ref_name }}
           files: melta-*.apk
+          body_path: release-notes.md
           generate_release_notes: true
+          draft: false
+          prerelease: false
+          make_latest: true
