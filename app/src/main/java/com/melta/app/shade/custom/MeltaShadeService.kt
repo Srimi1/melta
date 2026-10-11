@@ -8,6 +8,7 @@ import android.graphics.PixelFormat
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.Gravity
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -68,6 +69,7 @@ class MeltaShadeService : AccessibilityService(), LifecycleOwner, SavedStateRegi
     override fun onServiceConnected() {
         super.onServiceConnected()
         instance = this
+        Log.i(TAG, "Melta Shade service connected")
         windowManager = getSystemService(WINDOW_SERVICE) as WindowManager
         lifecycleRegistry.currentState = Lifecycle.State.RESUMED
         scope.launch {
@@ -161,7 +163,9 @@ class MeltaShadeService : AccessibilityService(), LifecycleOwner, SavedStateRegi
             }
             true
         }
-        runCatching { windowManager.addView(v, lp) }.onSuccess { strip = v }
+        runCatching { windowManager.addView(v, lp) }
+            .onSuccess { strip = v }
+            .onFailure { Log.e(TAG, "Could not add the trigger strip", it) }
     }
 
     private fun removeStrip() {
@@ -206,10 +210,13 @@ class MeltaShadeService : AccessibilityService(), LifecycleOwner, SavedStateRegi
             title = "Melta Shade"
             if (Build.VERSION.SDK_INT >= 31) blurBehindRadius = (24 * resources.displayMetrics.density).toInt()
         }
-        runCatching { windowManager.addView(root, lp) }.onSuccess {
-            panel = root
-            panelVisible = true
-        }
+        runCatching { windowManager.addView(root, lp) }
+            .onSuccess {
+                panel = root
+                panelVisible = true
+                Log.i(TAG, "Melta Shade opened")
+            }
+            .onFailure { Log.e(TAG, "Could not open Melta Shade", it) }
     }
 
     fun closePanel() {
@@ -248,6 +255,8 @@ class MeltaShadeService : AccessibilityService(), LifecycleOwner, SavedStateRegi
     }
 
     companion object {
+        private const val TAG = "MeltaShade"
+
         @Volatile
         var instance: MeltaShadeService? = null
             private set

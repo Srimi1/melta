@@ -36,7 +36,11 @@ class MainActivity : ComponentActivity() {
         if (BuildConfig.DEBUG) intent.getStringExtra(EXTRA_THEME)?.let(::setThemeForDemo)
         if (BuildConfig.DEBUG && intent.getBooleanExtra(EXTRA_OPEN_SHADE, false)) {
             // Give the service a moment to connect, then open Melta Shade for the screenshots.
-            window.decorView.postDelayed({ MeltaShadeService.instance?.openPanel() }, 1500)
+            window.decorView.postDelayed({
+                val service = MeltaShadeService.instance
+                android.util.Log.i("MeltaShade", "Debug open requested, service connected: ${service != null}")
+                service?.openPanel()
+            }, 1500)
         }
         setContent {
             MeltaTheme {

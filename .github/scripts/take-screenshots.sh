@@ -104,9 +104,17 @@ adb shell appops set "$PKG" WRITE_SETTINGS allow || true
 adb shell cmd notification post -S bigtext -t "Professor Oak" oak "Your Pokédex is 62% complete. Keep going!" || true
 adb shell cmd notification post -S bigtext -t "Misty" misty "Meet at Cerulean Gym at 5?" || true
 adb shell cmd notification post -S bigtext -t "Nurse Joy" joy "Your Pokémon are fully healed." || true
-sleep 4
+# Wait until Android has actually bound the accessibility service.
+for i in $(seq 1 30); do
+  if adb shell dumpsys accessibility | grep -q "MeltaShadeService"; then echo "Melta Shade service bound"; break; fi
+  sleep 1
+done
+adb logcat -c
 open_screen --es melta.theme night --ez melta.openShade true
 shot 10-melta-shade 8
+echo "---- Melta Shade log ----"
+adb logcat -d -s MeltaShade:V AndroidRuntime:E | tail -n 60 || true
+adb shell dumpsys accessibility | grep -i -A3 "melta" | head -n 20 || true
 adb shell input keyevent KEYCODE_BACK
 
 adb shell dumpsys battery reset
